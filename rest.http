@@ -13,32 +13,34 @@ POST http://localhost:3000/api/users/signup
 Content-Type: application/json
 
 {
-  "name": "James",
-  "email": "assman",
+  "name": "tit boy",
+  "email": "bazooka",
   "password": "123"
 }
 
-
+//login
 ###
 POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
 {
-  "email": "assman",
-  "password": "123as"
+   "email": "bazooka",
+  "password": "123"
 }
 
 
 
 //update account
 ###
-PATCH http://localhost:3000/api/users/5547b445-284e-4870-8a29-766285aa8533
+PATCH http://localhost:3000/api/users/5da39d3b-377c-4c5d-a6bf-1c64eadfa2d6
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA3YTkxZWRmLWY4YjctNDFmZS1iNzE5LTZkYjRiODc1NDRhZCIsIm5hbWUiOiJ0aXQgYm95IiwiZW1haWwiOiJiYXpvb2thIiwicGFzc3dvcmQiOiIkMmIkMTAkWC9CQjBVMHFjaS53aFZvUWsuZldJZVdtQTlNVUY5LkNFNHJNZm9heGZNZlhVQUVhTlpndnEiLCJyb2xlIjoiVVNFUiIsImNyZWF0ZWRBdCI6IjIwMjItMDktMjZUMTc6Mjk6NDcuMTk4WiIsImlhdCI6MTY2NDIxNDAyNH0.Ddoa_OBlzvkWDLZET5vJEsCGR0hYr08k4pjnH49L3yI
 
 {
-  "name": "L"
+  "name": "yerrrrrrt"
 }
 
 ###
 //Delete User
-DELETE http://localhost:3000/api/users/5547b445-284e-4870-8a29-766285aa8533
+DELETE http://localhost:3000/api/users/b1a6c635-8b17-4d0a-977b-f6f7c8409f0f
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5YWI1MGRlLWU4NWMtNGUxYS1hNDEyLTdlMjJjM2Q0MzQzMSIsIm5hbWUiOiJKYW1lcyIsImVtYWlsIjoiY2hpbXBib295QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHlVVU5tSlFGUy5uSlc2cFc2UzRWa2VLbHBSaEFFV0RuYzliWlVLQmczYU9oVkwvVGFON2lpIiwicm9sZSI6IlVTRVIiLCJjcmVhdGVkQXQiOiIyMDIyLTA5LTI2VDE2OjI2OjU1LjA3MFoiLCJpYXQiOjE2NjQyMTAxNDV9.Cio5-Y8kjbyNJOGDfxItRM5jJpiJX8CTw0PUazOPTNo

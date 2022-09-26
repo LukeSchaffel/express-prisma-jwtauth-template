@@ -2,7 +2,9 @@ const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const bcrypt = require('bcrypt')
-
+const jwt = require('jsonwebtoken')
+const authenticateToken = require('../middleware/auth.js').authenticateToken
+require('dotenv').config()
 //get all users
 router.get('/users', async (req, res, next) => {
   try {
@@ -41,20 +43,24 @@ router.post('/users/login', async (req, res, next) => {
     }
   })
   if (!user) {
-    res.send('Invalid Username or Password')
-    return
+    return res.status(400).send('Username or Password is incorrect')
   }
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
-      res.send("log in successful")
+      console.log('login successful');
     } else {
       res.send('Invalid Username or Password')
       return
     }
   } catch (error) {
-    console.log(error)
-    throw error
+    res.status(500).send
   }
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+
+  res.json({
+    accessToken: accessToken,
+    id: user.id
+  })
 });
 
 
@@ -89,7 +95,11 @@ router.post('/users/signup', async (req, res, next) => {
 
 
 //update user
-router.patch('/users/:id', async (req, res, next) => {
+router.patch('/users/:id', authenticateToken, async (req, res, next) => {
+  if(req.user.id !== req.params.id ) {
+    console.log('invalid permissions');
+    return res.status(401).send('invalid request')
+  }
   try {
     const { id } = req.params
     const user = await prisma.user.update({
@@ -107,7 +117,7 @@ router.patch('/users/:id', async (req, res, next) => {
 
 
 //delete user
-router.delete('/users/:id', async (req, res, next) => {
+router.delete('/users/:id', authenticateToken, async (req, res, next) => {
   try {
     const { id } = req.params
     const deletedUser = await prisma.user.delete({
