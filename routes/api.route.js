@@ -5,34 +5,10 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const authenticateToken = require('../middleware/auth.js').authenticateToken
 require('dotenv').config()
-//get all users
-router.get('/users', async (req, res, next) => {
-  try {
-    const users = await prisma.user.findMany({})
-    res.json(users)
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-});
 
 
-//get one user by ID
-router.get('/users/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id
-      }
-    })
-    res.json(user)
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-});
 
+//--------public routes
 
 //sign in
 router.post('/users/login', async (req, res, next) => {
@@ -59,7 +35,7 @@ router.post('/users/login', async (req, res, next) => {
 
   res.json({
     accessToken: accessToken,
-    id: user.id
+    user: user
   })
 });
 
@@ -94,6 +70,44 @@ router.post('/users/signup', async (req, res, next) => {
 });
 
 
+
+// ------------ protected routes
+
+
+
+//get all users
+router.get('/users', authenticateToken, async (req, res, next) => {
+  const authorized = req.user.role === 'ADMIN' ? true : false
+  if(!authorized) {
+    return res.status(401).send('invalid permissions')
+  }
+  try {
+    const users = await prisma.user.findMany({})
+    res.json(users)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+});
+
+
+//get one user by ID
+router.get('/users/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id
+      }
+    })
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+});
+
+
 //update user
 router.patch('/users/:id', authenticateToken, async (req, res, next) => {
   const authorized = req.user.role === 'ADMIN' || req.user.id === req.params.id ? true : false
@@ -116,9 +130,12 @@ router.patch('/users/:id', authenticateToken, async (req, res, next) => {
   }
 });
 
-
 //delete user
 router.delete('/users/:id', authenticateToken, async (req, res, next) => {
+  const authorized = req.user.role === 'ADMIN' || req.user.id === req.params.id ? true : false
+  if(!authorized) {
+    return res.status(401).send('invalid permissions')
+  }
   try {
     const { id } = req.params
     const deletedUser = await prisma.user.delete({
