@@ -96,9 +96,10 @@ router.post('/users/signup', async (req, res, next) => {
 
 //update user
 router.patch('/users/:id', authenticateToken, async (req, res, next) => {
-  if(req.user.id !== req.params.id ) {
+  const authorized = req.user.role === 'ADMIN' || req.user.id === req.params.id ? true : false
+  if(!authorized) {
     console.log('invalid permissions');
-    return res.status(401).send('invalid request')
+    return res.status(401).send('invalid permissions')
   }
   try {
     const { id } = req.params
