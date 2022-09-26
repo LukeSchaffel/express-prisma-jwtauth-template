@@ -1,0 +1,32 @@
+
+//get all users
+GET http://localhost:3000/api/users
+
+###
+//get one user by uid
+GET http://localhost:3000/api/users/5547b445-284e-4870-8a29-766285aa8533
+
+
+//create account
+###
+POST http://localhost:3000/api/users/signup
+Content-Type: application/json
+
+{
+  "name": "James",
+  "email": "jameies got a gun",
+  "password": "asdf"
+}
+
+//update account
+###
+PATCH http://localhost:3000/api/users/5547b445-284e-4870-8a29-766285aa8533
+Content-Type: application/json
+
+{
+  "name": "L"
+}
+
+###
+//Delete User
+DELETE http://localhost:3000/api/users/5547b445-284e-4870-8a29-766285aa8533
