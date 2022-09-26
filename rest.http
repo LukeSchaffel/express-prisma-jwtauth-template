@@ -14,9 +14,21 @@ Content-Type: application/json
 
 {
   "name": "James",
-  "email": "jameies got a gun",
-  "password": "asdf"
+  "email": "assman",
+  "password": "123"
 }
+
+
+###
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "assman",
+  "password": "123as"
+}
+
+
 
 //update account
 ###

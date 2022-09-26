@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client')
-
 const prisma = new PrismaClient()
+const bcrypt = require('bcrypt')
 
 //get all users
 router.get('/users', async (req, res, next) => {
@@ -13,6 +13,7 @@ router.get('/users', async (req, res, next) => {
     throw error
   }
 });
+
 
 //get one user by ID
 router.get('/users/:id', async (req, res, next) => {
@@ -28,14 +29,56 @@ router.get('/users/:id', async (req, res, next) => {
     console.log(error)
     throw error
   }
-
 });
+
+
+//sign in
+router.post('/users/login', async (req, res, next) => {
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: req.body.email
+    }
+  })
+  if (!user) {
+    res.send('Invalid Username or Password')
+    return
+  }
+  try {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      res.send("log in successful")
+    } else {
+      res.send('Invalid Username or Password')
+      return
+    }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+});
+
+
 
 //create user
 router.post('/users/signup', async (req, res, next) => {
+  const exists = await prisma.user.count({
+    where: {
+      email: req.body.email
+    }
+  })
+  if (exists) {
+    res.send("A user with this Email Already Exists")
+    return
+  }
   try {
+    const salt = await bcrypt.genSalt()
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
     const user = await prisma.user.create({
-      data: req.body
+      data: {
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
+      }
     })
     res.json(user)
   } catch (error) {
@@ -62,6 +105,8 @@ router.patch('/users/:id', async (req, res, next) => {
   }
 });
 
+
+//delete user
 router.delete('/users/:id', async (req, res, next) => {
   try {
     const { id } = req.params
