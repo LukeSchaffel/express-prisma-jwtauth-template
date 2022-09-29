@@ -119,19 +119,22 @@ router.get('/users/:id', async (req, res, next) => {
 
 
 //update user
-router.patch('/users/:id', authenticateToken, async (req, res, next) => {
+router.patch('/users/:id',authenticateToken, async (req, res, next) => {
   const authorized = req.user.role === 'ADMIN' || req.user.id === req.params.id ? true : false
   if(!authorized) {
     console.log('invalid permissions');
     return res.status(401).send('invalid permissions')
   }
+  
   try {
     const { id } = req.params
     const user = await prisma.user.update({
       where: {
         id: id
       },
-      data: req.body
+      data: {
+        name: req.body.name
+      }
     })
     res.json(user)
   } catch (error) {
